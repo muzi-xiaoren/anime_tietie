@@ -4,12 +4,6 @@ from pic_produce import *
 from tsdm import *
 from get_respose import *
 
-import os
-from bs4 import BeautifulSoup
-from pic_produce import *
-from tsdm import *
-from get_respose import *
-
 class WebScraper:
     def __init__(self, url):
         self.url = url
@@ -17,16 +11,26 @@ class WebScraper:
         # 获取网页数据
         self.response = self.get_response()
         self.soup = BeautifulSoup(self.response, 'html.parser')
-        # 设置转换字典
-        self.weekdays = ['未知', '周一 (月)', '周二 (火)', '周三 (水)', '周四 (木)', '周五 (金)', '周六 (土)', '周日 (日)', '网络放送 & 其他']
-        self.mapping_num = {'周一 (月)': 1, '周二 (火)': 2, '周三 (水)': 3, '周四 (木)': 4, '周五 (金)': 5, '周六 (土)': 6, '周日 (日)': 7, '网络放送 & 其他': 8}
+        # 初始化转换字典
+        self.weekdays = ['未知', '周一 (月)', '周二 (火)', '周三 (水)', '周四 (木)', '周五 (金)', '周六 (土)', '周日 (日)']
+        self.mapping_num = {'周一 (月)': 1, '周二 (火)': 2, '周三 (水)': 3, '周四 (木)': 4, '周五 (金)': 5, '周六 (土)': 6, '周日 (日)': 7}
         self.init_result = {}
 
     def get_response(self):
         return check_file(self.url, self.file_path)
 
     def parse_data(self):
+        # 动态调整 weekday_elements 数量
         weekday_elements = self.soup.find_all(class_='date2')
+        if len(weekday_elements) == 8:
+            self.weekdays.append('网络放送 & 其他')
+            self.mapping_num['网络放送 & 其他'] = 8
+        elif len(weekday_elements) == 9:
+            self.weekdays.append('泡面番')
+            self.mapping_num['泡面番'] = 8
+            self.weekdays.append('网络放送 & 其他')
+            self.mapping_num['网络放送 & 其他'] = 9
+
         counts = {}
         for element in weekday_elements:
             weekday_text = element.get_text(strip=True)
@@ -58,11 +62,11 @@ class WebScraper:
 
     def print_result(self):
         for key, value in self.init_result.items():
-            key = self.weekdays[key]
-            if key != '网络放送 & 其他':
-                print(f"{key.split()[0]}:", end='')
+            key_name = self.weekdays[key]
+            if key_name not in ['泡面番', '网络放送 & 其他']:
+                print(f"{key_name.split()[0]}:", end='')
             else:
-                print(f"{key[0:2]}:", end='')
+                print(f"{key_name.split()[0:2]}:", end='')
             titles = [f"{i+1}.{item[0]}" for i, item in enumerate(value)]
             print('   '.join(titles) + '。')
 
@@ -111,6 +115,6 @@ class WebScraper:
 
 if __name__ == "__main__":
     # 更换每期的url
-    url = 'https://yuc.wiki/202407/'
+    url = 'https://yuc.wiki/202410/'
     scraper = WebScraper(url)
     scraper.run()

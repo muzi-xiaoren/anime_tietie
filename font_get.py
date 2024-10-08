@@ -1,6 +1,7 @@
 import os
 import glob
 
+# 获取 Windows 字体目录下的字体
 def get_all_fonts():
     # Windows 字体目录
     font_dir ="C:/Windows/Fonts"

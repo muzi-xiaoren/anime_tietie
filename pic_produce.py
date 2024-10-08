@@ -89,10 +89,7 @@ def add_text_to_images(init_result, dir_name, weekdays, first_name, score_dic):
 
         # 设置字体
         font_path_text = "C:/Windows/Fonts/msyhbd.ttc"
-        try:
-            font = ImageFont.truetype(font_path_text, 30)
-        except IOError:
-            font = ImageFont.load_default()
+        font = ImageFont.truetype(font_path_text, 30)
 
         # 将图片排列到新图像上
         for index, (filename, img) in enumerate(images):
