@@ -41,9 +41,9 @@ class WebScraper:
                 counts[weekday_text] = len(temp_date)
 
         date_titles = [title.get_text(strip=True) for title in self.soup.find_all(class_=['date_title', 'date_title1', 'date_title2', 'date_title_'])]
-        images_120px = [img['src'] for img in self.soup.find_all('img', width='120px')]
-        time_new = [time.get_text(strip=True)[0:5] for time in self.soup.find_all(class_='imgep')]
-        time_new.extend(['0'] * (len(date_titles) - len(time_new)))
+        images_120px = [img['data-src'] for img in self.soup.find_all('img', width='120px')]
+        time_new = [time.get_text(strip=True)[0:5] for time in self.soup.find_all(class_=['imgtext','imgtext3_','imgtext4'])]
+        time_new.extend([''] * (len(date_titles) - len(time_new)))
 
         current_index = 0
         for key, count in counts.items():
@@ -66,7 +66,7 @@ class WebScraper:
             if key_name not in ['泡面番', '网络放送 & 其他']:
                 print(f"{key_name.split()[0]}:", end='')
             else:
-                print(f"{key_name.split()[0:2]}:", end='')
+                print(f"{' '.join(key_name.split()[0:2])}:", end='')
             titles = [f"{i+1}.{item[0]}" for i, item in enumerate(value)]
             print('   '.join(titles) + '。')
 
@@ -95,7 +95,7 @@ class WebScraper:
                 else:
                     break
             score_dict = {sel: score for sel, score in zip(user_selections, scores)}
-            print(score_dict)
+            # print(score_dict)
             return score_dict
         return None
 
@@ -115,6 +115,6 @@ class WebScraper:
 
 if __name__ == "__main__":
     # 更换每期的url
-    url = 'https://yuc.wiki/202410/'
+    url = 'https://yuc.wiki/202501'
     scraper = WebScraper(url)
-    scraper.run()
+    scraper.run() 
