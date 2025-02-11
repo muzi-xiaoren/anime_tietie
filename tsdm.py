@@ -4,12 +4,10 @@ import requests
 
 def time_reload(days, compare_result):
     # 处理时间大于24小时的情况
-    for i, day in enumerate(days):
-        if day == 8:
+    for day in days:
+        if day >= 8:
             continue
-        next_day = days[(i + 1) % len(days)]
-        if next_day == 8:
-            next_day = days[(i + 2) % len(days)]
+        next_day = day % 7 + 1
         
         new_entries = []
         for entry in compare_result[day]:
@@ -47,6 +45,7 @@ def img_download(dir_name, user_selections, init_result):
         first = int(selection.split('.')[0])
         second = int(selection.split('.')[1])
         url = init_result[first][second-1][1]
+        print(init_result[first][second-1][0])
 
         response = requests.get(url)
         if response.status_code == 200:

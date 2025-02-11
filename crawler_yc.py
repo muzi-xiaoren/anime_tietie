@@ -9,15 +9,12 @@ class WebScraper:
         self.url = url
         self.file_path = url[17:23] + '.html'
         # 获取网页数据
-        self.response = self.get_response()
+        self.response = check_file(self.url, self.file_path)
         self.soup = BeautifulSoup(self.response, 'html.parser')
         # 初始化转换字典
         self.weekdays = ['未知', '周一 (月)', '周二 (火)', '周三 (水)', '周四 (木)', '周五 (金)', '周六 (土)', '周日 (日)']
         self.mapping_num = {'周一 (月)': 1, '周二 (火)': 2, '周三 (水)': 3, '周四 (木)': 4, '周五 (金)': 5, '周六 (土)': 6, '周日 (日)': 7}
         self.init_result = {}
-
-    def get_response(self):
-        return check_file(self.url, self.file_path)
 
     def parse_data(self):
         # 动态调整 weekday_elements 数量
@@ -37,10 +34,10 @@ class WebScraper:
             parent_div = element.find_parent('div')
             next_div = parent_div.find_next_sibling('div')
             if next_div:
-                temp_date = next_div.find_all(class_=['date_title', 'date_title1', 'date_title2', 'date_title_'])
+                temp_date = next_div.find_all(class_=['date_title', 'date_title1', 'date_title2', 'date_title_', 'date_title__'])
                 counts[weekday_text] = len(temp_date)
 
-        date_titles = [title.get_text(strip=True) for title in self.soup.find_all(class_=['date_title', 'date_title1', 'date_title2', 'date_title_'])]
+        date_titles = [title.get_text(strip=True) for title in self.soup.find_all(class_=['date_title', 'date_title1', 'date_title2', 'date_title_', 'date_title__'])]
         images_120px = [img['data-src'] for img in self.soup.find_all('img', width='120px')]
         time_new = [time.get_text(strip=True)[0:5] for time in self.soup.find_all(class_=['imgtext','imgtext3_','imgtext4'])]
         time_new.extend([''] * (len(date_titles) - len(time_new)))
