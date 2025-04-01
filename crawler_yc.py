@@ -1,4 +1,5 @@
 import os
+import re
 from bs4 import BeautifulSoup
 from pic_produce import *
 from tsdm import *
@@ -39,7 +40,12 @@ class WebScraper:
 
         date_titles = [title.get_text(strip=True) for title in self.soup.find_all(class_=['date_title', 'date_title1', 'date_title2', 'date_title_', 'date_title__'])]
         images_120px = [img['data-src'] for img in self.soup.find_all('img', width='120px')]
-        time_new = [time.get_text(strip=True)[0:5] for time in self.soup.find_all(class_=['imgtext','imgtext3_','imgtext4'])]
+        time_new = [
+            time_text[0:5]
+            for time in self.soup.find_all(class_=['imgtext','imgtext3_','imgtext4','imgtext5','imgep'])
+            if (time_text := time.get_text(strip=True)) and re.match(r'^\d{2}:\d{2}~', time_text)
+        ]
+        # print(f"时间长度: {len(time_new)}, 图片长度: {len(images_120px)}, 标题长度: {len(date_titles)}")
         time_new.extend([''] * (len(date_titles) - len(time_new)))
 
         current_index = 0
@@ -49,6 +55,8 @@ class WebScraper:
                 combined_array.append([date_titles[current_index], images_120px[current_index], time_new[current_index]])
                 current_index += 1
             self.init_result[self.mapping_num[key]] = combined_array
+        # print(self.init_result)
+
 
     def sort_data(self):
         days = list(self.mapping_num.values())

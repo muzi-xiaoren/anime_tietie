@@ -113,7 +113,7 @@ def add_text_to_images(init_result, dir_name, weekdays, first_name, score_dic):
         
         image_size = (600, 750)
         border_size = 15
-        text_height = 80
+        text_height = 100
         new_image_size = (image_size[0] + 2 * border_size, image_size[1] + 2 * border_size + text_height)
         
         num_images = len(images)
