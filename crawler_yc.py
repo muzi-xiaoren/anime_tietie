@@ -120,6 +120,6 @@ class WebScraper:
 
 if __name__ == "__main__":
     # 更换每期的url
-    url = 'https://yuc.wiki/202507'
+    url = 'https://yuc.wiki/202601/'
     scraper = WebScraper(url)
     scraper.run() 

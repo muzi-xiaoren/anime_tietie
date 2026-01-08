@@ -81,9 +81,8 @@ def add_text_to_image(new_image, x, y, name, time, font, add_name, add_time, tex
     return new_image
 
 def save_new_image(new_image, produced_dir, background_file, first_name, score_dic):
-    base_name = os.path.splitext(background_file)[0]
-    suffix = "_after" if score_dic else "_before"
-    new_file_path = os.path.join(produced_dir, f"{first_name[0:6]}_{base_name}{suffix}.png")
+    suffix = "_finish" if score_dic else "_before"
+    new_file_path = os.path.join(produced_dir, f"{first_name[0:6]}_{suffix}.png")
     if os.path.exists(new_file_path):
         print(f"文件已存在，跳过: {new_file_path}")
         return
@@ -170,7 +169,7 @@ def add_text_to_images(init_result, dir_name, weekdays, first_name, score_dic):
                 img_with_border = Image.new('RGBA', (image_size[0] + 2 * border_size, image_size[1] + 2 * border_size), (255, 255, 255, 0))
                 img_with_border.paste(img, (border_size, border_size))
                 
-                if add_name and add_time:
+                if add_name or add_time:
                     img_with_border = img_with_border.convert("RGBA")
                     img_with_border_alpha = img_with_border.split()[3].point(lambda p: p * text_opacity)
                     img_with_border.putalpha(img_with_border_alpha)
